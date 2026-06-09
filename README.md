@@ -4,21 +4,35 @@ WhatsChat AI is a WhatsApp Business API inbox built with Next.js, Prisma, Postgr
 
 The app is designed for businesses that want to receive WhatsApp messages through the Meta WhatsApp Cloud API, manage leads inside a web inbox, and optionally let an AI assistant respond using configured business knowledge.
 
+--
+
 <img width="1600" height="677" alt="WhatsApp Image 2026-06-09 at 5 40 25 PM" src="https://github.com/user-attachments/assets/48ff70fe-a221-4226-972b-7516bab405ed" />
+
+--
 
 <img width="1600" height="727" alt="WhatsApp Image 2026-06-09 at 5 46 03 PM" src="https://github.com/user-attachments/assets/1ae2fedc-a3db-4e2b-a2a2-cfd716fc0da1" />
 
+-- 
+
 <img width="1312" height="869" alt="WhatsApp Image 2026-06-09 at 5 47 06 PM" src="https://github.com/user-attachments/assets/622d68e0-7405-4c9f-8d60-7425caefdc96" />
+
+--
 
 <img width="1600" height="727" alt="WhatsApp Image 2026-06-09 at 5 47 26 PM" src="https://github.com/user-attachments/assets/a3175c1b-53b9-4834-9f14-f939a3564df1" />
 
+--
+
 <img width="1600" height="730" alt="WhatsApp Image 2026-06-09 at 5 49 21 PM" src="https://github.com/user-attachments/assets/67f48c83-4b32-401d-b3d3-f1dec2fd3b89" />
+
+--
 
 <img width="1600" height="722" alt="WhatsApp Image 2026-06-09 at 5 31 48 PM" src="https://github.com/user-attachments/assets/e2330c1a-3285-499b-8b16-b17407d12725" />
 
+--
+
 <img width="1600" height="745" alt="WhatsApp Image 2026-06-09 at 5 39 01 PM" src="https://github.com/user-attachments/assets/506129a0-9f55-4d5c-a631-7a918fb6dcb2" />
 
-
+--
 
 ## Features
 
