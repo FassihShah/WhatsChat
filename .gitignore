@@ -1,0 +1,48 @@
+# dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+
+# production
+dist/
+
+# Prisma
+prisma/*.db
+prisma/*.db-journal
+
+# environment files
+.env
+.env.*
+!.env.example
+!.env.local.example
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# operating system
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# local tool state
+.claude/
+
+# misc
+coverage/
+.vercel/
+.netlify/

@@ -1,0 +1,201 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?
+  full_name     String?
+  role          String    @default("user") // admin | user
+  created_date  DateTime  @default(now())
+  updated_date  DateTime  @updatedAt
+
+  conversations Conversation[]
+  wa_configs    UserWAConfig[]
+  team_members  TeamMember[]
+
+  @@map("users")
+}
+
+model Conversation {
+  id                   String    @id @default(cuid())
+  owner_user_id        String
+  customer_phone       String
+  customer_name        String?
+  customer_email       String?
+  customer_company     String?
+  status               String    @default("new") // new|contacted|qualified|appointment_booked|follow_up|won|lost|closed
+  handling_mode        String    @default("ai") // ai|human
+  ai_paused            Boolean   @default(false)
+  last_message         String?
+  last_message_time    DateTime?
+  unread_count         Int       @default(0)
+  is_online            Boolean   @default(false)
+  tags                 String[]  @default([])
+  notes                String?
+  lead_source          String?
+  interest             String?
+  budget               String?
+  qualification_score  Int?
+  ai_summary           String?
+  suggested_action     String?
+  appointment_date     DateTime?
+  appointment_status   String?   // scheduled|confirmed|cancelled|completed
+  assigned_to          String?
+  created_date         DateTime  @default(now())
+  updated_date         DateTime  @updatedAt
+
+  owner   User      @relation(fields: [owner_user_id], references: [id])
+  messages Message[]
+
+  @@index([owner_user_id])
+  @@index([customer_phone, owner_user_id])
+  @@map("conversations")
+}
+
+model Message {
+  id                  String    @id @default(cuid())
+  conversation_id     String
+  sender              String    // customer|agent|ai|system
+  content             String    @default("")
+  message_type        String    @default("text") // text|image|video|audio|document|template|internal_note|system
+  media_url           String?
+  media_name          String?
+  whatsapp_message_id String?   @unique
+  status              String    @default("sent") // sent|delivered|read|failed
+  is_ai_draft         Boolean   @default(false)
+  agent_name          String?
+  template_name       String?
+  timestamp           DateTime  @default(now())
+  created_date        DateTime  @default(now())
+  updated_date        DateTime  @updatedAt
+
+  conversation Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+
+  @@index([conversation_id])
+  @@index([whatsapp_message_id])
+  @@map("messages")
+}
+
+model UserWAConfig {
+  id                String    @id @default(cuid())
+  user_id           String
+  phone_number_id   String?
+  access_token      String?
+  waba_id           String?
+  display_name      String?
+  verify_token      String?
+  webhook_url       String?
+  connection_status String    @default("pending") // pending|connected|error
+  error_message     String?
+  is_active         Boolean   @default(true)
+  created_date      DateTime  @default(now())
+  updated_date      DateTime  @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@index([phone_number_id])
+  @@index([verify_token])
+  @@map("user_wa_configs")
+}
+
+model MessageTemplate {
+  id               String    @id @default(cuid())
+  user_id          String?
+  name             String
+  display_name     String?
+  category         String    @default("MARKETING") // MARKETING|UTILITY|AUTHENTICATION
+  language         String    @default("en")
+  status           String    @default("pending") // pending|approved|rejected|paused
+  header_text      String?
+  body_text        String?
+  footer_text      String?
+  variable_count   Int       @default(0)
+  variable_labels  String[]  @default([])
+  buttons          Json?
+  rejection_reason String?
+  meta_template_id String?
+  created_date     DateTime  @default(now())
+  updated_date     DateTime  @updatedAt
+
+  @@unique([user_id, name])
+  @@index([user_id])
+  @@map("message_templates")
+}
+
+model KnowledgeBase {
+  id             String    @id @default(cuid())
+  user_id        String?
+  title          String
+  category       String    @default("general") // company_overview|services|pricing|faqs|policies|products|team|custom|general
+  content_type   String    @default("text") // text|faq|url|pdf|pricing|video|image
+  content        String?
+  faq_question   String?
+  faq_answer     String?
+  source_url     String?
+  tags           String[]  @default([])
+  is_active      Boolean   @default(true)
+  is_restricted  Boolean   @default(false)
+  created_date   DateTime  @default(now())
+  updated_date   DateTime  @updatedAt
+
+  @@index([user_id])
+  @@map("knowledge_base")
+}
+
+model AppSettings {
+  id           String    @id @default(cuid())
+  user_id      String?
+  category     String    // whatsapp|ai_agent|calendar|notifications|general
+  key          String
+  value        String?
+  created_date DateTime  @default(now())
+  updated_date DateTime  @updatedAt
+
+  @@unique([user_id, category, key])
+  @@index([user_id, category])
+  @@map("app_settings")
+}
+
+model AutomationRule {
+  id          String    @id @default(cuid())
+  user_id     String?
+  name        String
+  is_active   Boolean   @default(true)
+  trigger     String    // new_lead|keyword_match|no_reply|angry_message|human_request|high_value|appointment_request|qualification_complete|follow_up_due|custom
+  trigger_config Json?
+  actions     Json      @default("[]")
+  priority    Int       @default(0)
+  created_date DateTime @default(now())
+  updated_date DateTime @updatedAt
+
+  @@index([user_id])
+  @@map("automation_rules")
+}
+
+model TeamMember {
+  id              String    @id @default(cuid())
+  user_id         String?
+  name            String
+  email           String?
+  role            String    @default("support_agent") // admin|manager|sales_agent|support_agent
+  is_available    Boolean   @default(true)
+  working_hours   Json?
+  permissions     String[]  @default([])
+  avatar_url      String?
+  created_date    DateTime  @default(now())
+  updated_date    DateTime  @updatedAt
+
+  user User? @relation(fields: [user_id], references: [id])
+
+  @@index([user_id])
+  @@map("team_members")
+}
